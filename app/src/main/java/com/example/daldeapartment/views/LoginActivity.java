@@ -18,7 +18,6 @@ import com.example.daldeapartment.viewModels.LoginViewModel;
 public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel mLoginViewModel;
-
     private EditText mUsername, mPassword;
     private Button mLogin;
     @Override
