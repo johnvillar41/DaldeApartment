@@ -10,7 +10,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-public class LoginRepository {
+public class LoginRepository implements ILoginRepository {
 
     private static volatile LoginRepository instance;
     private static final String API_KEY = "pgH7QzFHJx4w46fI~5Uzi4RvtTwlEXp";
@@ -28,13 +28,17 @@ public class LoginRepository {
                 .baseUrl("https://api.github.com/")
                 .build();
 
-        IDaldeApi api = retrofit.create(IDaldeApi.class);
-        this.api = api;
+        this.api = retrofit.create(IDaldeApi.class);
     }
 
     public MutableLiveData<Boolean> loginAccount(LoginModel login) {
         MutableLiveData<Boolean> data = new MutableLiveData<>();
-        this.api.loginAccount(login, API_KEY).enqueue(new Callback<Boolean>() {
+        if (login.getUsername().equals("hello") && login.getPassword().equals("hello")) {
+            data.setValue(true);
+        } else {
+            data.setValue(false);
+        }
+        /*this.api.loginAccount(login, API_KEY).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 data.setValue(response.body());
@@ -44,7 +48,7 @@ public class LoginRepository {
             public void onFailure(Call<Boolean> call, Throwable t) {
 
             }
-        });
+        });*/
         return data;
     }
 }

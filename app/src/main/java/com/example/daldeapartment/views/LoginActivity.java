@@ -1,6 +1,5 @@
 package com.example.daldeapartment.views;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,14 +7,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.daldeapartment.R;
 import com.example.daldeapartment.models.LoginModel;
+import com.example.daldeapartment.repositories.LoginRepository;
 import com.example.daldeapartment.viewModels.LoginViewModel;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements ILoginView {
 
     private LoginViewModel mLoginViewModel;
     private EditText mUsername, mPassword;
@@ -27,23 +26,12 @@ public class LoginActivity extends AppCompatActivity {
         initializeViews();
 
         mLoginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
-        mLoginViewModel.initializeViewModel();
+        mLoginViewModel.initializeViewModel(LoginRepository.getInstance(),this);
         mLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LoginModel login = new LoginModel(mUsername.getText().toString(), mPassword.getText().toString());
-                mLoginViewModel.onLogin(login).observe(LoginActivity.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(Boolean aBoolean) {
-                        if(aBoolean) {
-                            Toast.makeText(LoginActivity.this, "Success", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(LoginActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                mLoginViewModel.onLogin(login);
             }
         });
     }
@@ -52,5 +40,15 @@ public class LoginActivity extends AppCompatActivity {
         mUsername = findViewById(R.id.username);
         mPassword = findViewById(R.id.password);
         mLogin = findViewById(R.id.login);
+    }
+
+    @Override
+    public void displaySuccess() {
+        Toast.makeText(this, "Successfull Login", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void displayError() {
+        Toast.makeText(this, "Error Login", Toast.LENGTH_SHORT).show();
     }
 }
